@@ -1,0 +1,15 @@
+RewriteEngine On
+RewriteBase /admin/
+
+RewriteCond %{REQUEST_URI} ^/admin/login.php [NC]
+RewriteRule ^(.*)$ index.php?route=$1 [NC,L,QSA]
+
+RewriteCond %{REQUEST_URI} !^/admin/login.php [NC]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^$ index.php?route=$1 [NC,L,QSA]
+
+RewriteCond %{REQUEST_URI} !^/admin/login.php [NC]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php?route=$1 [NC,L,QSA]

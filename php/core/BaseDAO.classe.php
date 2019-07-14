@@ -8,18 +8,19 @@ class BaseDAO{
 */
 	public static $sl = false; // somente leitura
 	
-	public $codProjeto = CODPROJETO;
+	// depreciada a variável abaixo
+	public $codProjeto = 1;
 
-	protected $base = "dsacaoco_blog";
+	protected $base = "eagle";
 	protected $host = "localhost";
 
-	protected $usuario = "dsacaoco_blog";
-	protected $pass = "l2rw@coach";
+	protected $usuario = "root";
+	protected $pass = "";
 
-	protected $leitura_usuario = "dsacaoco_blog";
-	protected $leitura_pass = "l2rw@coach";
+	protected $leitura_usuario = "root";
+	protected $leitura_pass = "";
 
-	protected $base_local = "rocket_websales";
+	protected $base_local = "eagle";
 	protected $host_local = "localhost";
 	protected $usuario_local = "root";
 	protected $pass_local = "";
@@ -102,10 +103,34 @@ class BaseDAO{
 		return $bd->get_mysqli();
 	}
 
-	public static function exception($exception)
+	public static function exception(Exception $exception)
 	{
-		var_dump($exception);
+		if(self::is_local())
+			echo "Localhost - BaseDao::exception - Erro ao executar comando SQL: ".$exception->getMessage();
+		
+		throw new Exception("Erro ao executar comando SQL.");
 	} 
+
+	public static function prepare_var( $var, $params = 'string')
+	{
+		// tipo do dado a ser trabalhado
+		$data_type = null;
+		$new_var = $var;
+
+		// se veio array de config pega só o tipo
+		if(is_array($params))
+			$data_type = $params['data_type'];
+		else if(is_string($params))
+			$data_type = $params;
+
+		if($data_type == 'string')
+		{
+			$new_var = str_replace("'", "''", $new_var);
+		}
+
+		return $new_var;
+
+	}
 
 	public static function is_local()
 	{
@@ -159,9 +184,11 @@ class BaseDAO{
 
 }
 
-function erro_bd($ex, $err)
+function erro_bd($ex)
 {
-	var_dump($ex);
+	if($ex == null)
+		$ex = new Exception("Erro na base de dados...");
+	BaseDao::exception($ex);
 }
 
 ?>

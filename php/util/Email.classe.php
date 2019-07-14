@@ -34,6 +34,27 @@ class Email extends PHPMailer{
 		$this->ClearAttachments();
 	}
 	
+	static function send_pass_token($token, $to)
+	{
+		$smtp = EmailConfig::_get();
+		$e = new Email();
+		$e->Subject = "Recuperar Senha Token"; 
+		$e->Username = "contato@wilsonneto.com.br";  
+		$e->Password = "Wnbr776e@";  
+		$e->Host = "mail.wilsonneto.com.br";  
+		$e->From = "contato@wilsonneto.com.br";
+		$e->FromName = "Wilson Neto";
+		$e->AddAddress( $to );
+		$e->Body = nl2br("O toke solicitado pelo sistema é \"" . $token . "\"");
+		if ($e->Send())
+			return true;
+		else{
+			die ($e->ErrorInfo);
+			return false;
+		}
+	}
+
+	/*
 	static function enviaNota( $msg, $assunto = null, $to = null){
 		$smtp = EmailConfig::_get();
 		$info = Info::get();
@@ -148,7 +169,7 @@ class Email extends PHPMailer{
 			return false;
 		}
 	}
-
+	*/
 
 }
 

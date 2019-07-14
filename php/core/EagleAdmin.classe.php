@@ -12,7 +12,20 @@ class EagleAdmin
 	public $html_content = '';
 	public $v;
 
+	public $cfg = array();
+
 	#endregion attributes
+
+	#region configs
+	public function cfg_setup()
+	{
+		$this->cfg["app_name"] = "Buzz";
+
+		// e-mails 
+
+	}
+
+	#endregion configs
 
 	#region processing
 	
@@ -24,62 +37,48 @@ class EagleAdmin
 	
 	public static function init($get = null, $options = null)
 	{
-	    $eagle = new EagleAdmin($get, $options);
+		$eagle = new EagleAdmin($get, $options);
+		$eagle->cfg_setup();
     	$eagle->route = EagleAdminRoute::proccess($get);
     	$eagle->init_credentials();
     	$eagle->v = new ViewHelper();
 
     	header('X-XSS-Protection: 0');
 
-    	// print_r($eagle->route); exit();
-
-    	if($eagle->credentials == null)
-    	{
-    		$eagle->login_page();
-    	}
-    	else
-    	{
-	    	$eagle->run();
-    	}
+		if(
+			EagleAdminRoute::route_type_need_login($eagle->route['type']) 
+			&& $eagle->credentials == null
+		){
+			$eagle->login_page();
+		}
+		else
+		{
+			$eagle->run();
+		}
 	}	
 
 	public function run() 
 	{
-		// code da master
-		$this->include_file('content/action/index.master.cod.php');
-		switch ($this->route['type']) {
-			case 'crud':
-				$this->menu_destaque = $this->route['entity'];
-				$this->include_file('content/action/crud_'.$this->route['action'].'.cod.php');
-				break;		
-			case 'logout':
-				$this->logout();
-				$this->login_page();
-				break;		
-			default:
-				break;
-		}
-		$this->include_file('content/view/index.master.php');
+		$this->menu_destaque = $this->route['menu_highlight'];
+
+		$this->include_file( $this->route['master_action_file'] );
+		$this->include_file($this->route['action_file']);
+		if($this->route['master_view_file_disable'] != 1)
+			$this->include_file( $this->route['master_view_file'] );	
+		else
+			$this->get_content_view();
 	}
 
+	public function debug($obj, $kill = true)
+	{
+		echo "<pre>".json_encode($obj, JSON_PRETTY_PRINT)."<pre>";
+		if($kill)
+			exit();
+	}
 	
 	public function get_content_view()
 	{
-		
-		switch ($this->route['type']) 
-		{
-			case 'old':
-				$this->include_file('old_pgs/'.$this->route['content'].'.php');
-				break;
-
-			case 'crud':
-				$this->include_file('content/view/crud_'.$this->route['action'].'.php');
-				break;
-
-			default:
-				$this->include_file('content/view/'.$this->route['content'].'.php');
-				break;
-		}
+		$this->include_file($this->route['view_file']);		
 	}
 	
 	public function is_post()
@@ -101,15 +100,7 @@ class EagleAdmin
 	#region redirects and pages
 	public function login_page()
 	{
-		if($_SERVER['REQUEST_URI'] != '/admin/login.php')
-		{
-			$this->redirect('/admin/login.php');
-		}
-		else
-		{
-			include('login.php');
-			exit();
-		}
+		$this->redirect( EagleAdminRoute::get_login_route() );
 	}
 
 	public function redirect($path)
@@ -151,6 +142,35 @@ class EagleAdmin
 			$final_out = number_format($out, is_int($params)?$params:2);
 		echo nl2br(htmlspecialchars($final_out));
 	}
+	
+	public function out_html( $out, $params = null )
+	{
+		echo $out;
+	}
+
+	
+	public function out_template( $out, $template, $params = null )
+	{
+		if( $out != '' && $out != null )
+		{
+			$final_out = $template;
+			$final_out = str_replace('#inner', nl2br(htmlspecialchars($out)), $final_out);
+			echo $final_out;			
+		}
+	}
+
+	public function out_if( $out, $template, $condition, $params = null )
+	{
+		if($condition)
+		{
+			if( $out != '' && $out != null )
+			{
+				$final_out = $template;
+				$final_out = str_replace('#inner', nl2br(htmlspecialchars($out)), $final_out);
+				echo $final_out;			
+			}			
+		}
+	}
 
 	public function include_file($path)
 	{
@@ -163,6 +183,18 @@ class EagleAdmin
 		}
 	}
 	#endregion
+
+	#region forms e campos
+
+	public function form_field($args, $out = false)
+	{
+		$field = StdFormFactory::field($args);
+		if($out)
+			$this->out_html($field);	
+		return $field;
+	}
+
+	#endregion forms e campos
 
 	#region session
 	private function get_session($key = null)
@@ -209,9 +241,9 @@ class EagleAdmin
 			$this->credentials['admin'] 			= $this->get_session('admin');
 			$this->credentials['grupo_admin'] 		= $this->get_session('admin_grupo');
 			$this->credentials['permissoes_admin'] 	= $this->get_session('admin_permissoes');
-			$GLOBALS["admin"] = $this->credentials['admin'];
-			$GLOBALS["grupo_admin"] = $this->credentials['grupo_admin'];
-			$GLOBALS["permissoes_admin"] = $this->credentials['permissoes_admin'];
+			
+			$this->credentials['workspace_id'] 		= $this->get_session('workspace_id');
+			$this->credentials['workspace_nome']	= $this->get_session('workspace_nome');
 		}
 		else
 		{
@@ -237,6 +269,28 @@ class EagleAdmin
 			return $this->get_session("admin_notificacoes_gerais_html");
 	}
 
+	public function save_credentials($admin, $grupo_admin, $workspace = null)
+	{
+		$this->set_session("admin", $admin);
+        $this->set_session("admin_grupo", $grupo_admin);
+        $this->set_session("admin_permissoes", PaginaAdminOld::_getListaPermissoesByGrupoMenu($admin->cod_grupo_admin));
+        $this->set_session("admin_menu_html", AdminViews::gerar_menu( $admin->cod_grupo_admin ));
+        $this->set_session("admin_notificacoes_gerais_html", AdminViews::gerar_notificacoes_gerais( $admin->id ) );
+		
+		if($workspace){
+			// salvar também o workspace na sessão
+			$this->set_session("workspace_id", $workspace->id);
+			$this->set_session("workspace_nome", $workspace->nome);
+		}
+
+	}
+	
+	public function save_credentials_workspace( $workspace )
+	{
+		// salvar também o workspace na sessão
+		$this->set_session("workspace_id", $workspace->id);
+		$this->set_session("workspace_nome", $workspace->nome);
+	}
 	
 	public function logout()
 	{
@@ -287,11 +341,64 @@ class EagleAdmin
 
 	#endregion onload
 
+	#region parameters
 
+	public function get_param($str, $default = null){
+		if(isset($_GET[$str]))
+		{
+			return $_GET[$str];
+		}else if(isset($_POST[$str]))
+		{
+			return $_POST[$str];
+		}{
+			return $default;
+		}
+	}
 
+	#endregion
 
+	#region work with page blocs
 
+	public function bloc($bloc_name)
+	{
+		if( file_exists("frontend/theme/views/blocs/$bloc_name.bloc.php") )
+			include("frontend/theme/views/blocs/$bloc_name.bloc.php");
+	}
 
+	public function bloc_cod($bloc_name)
+	{
+		if( file_exists("frontend/action/blocs/$bloc_name.bloc.php") )
+			include("frontend/action/blocs/$bloc_name.bloc.php");
+	}
+
+	#endregion
+	
+	#region bullets / extras / adds
+
+	public $location_bullets = [];
+	public function location_bullets_html()
+	{
+		$html = '<span class="path">';
+		foreach ($this->location_bullets as $k => $v) 
+		{
+			if($html != '<span class="path">')
+				$html .= ' > ';
+
+			if(isset($v['link']))
+				$html .= '<a href="/'.$v['link'].'">'.$v['label'].'</a>';
+			else
+				$html .= $v['label'];
+
+		}
+		$html .= '</span>';
+		return $html;
+	}
+
+	public function get_year(){
+		return date("Y");
+	}
+
+	#endregion
 }
 
 		

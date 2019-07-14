@@ -20,10 +20,12 @@
 
 				'nome' => [ 'list' => true ],
 				'email' => [ 'list' => true ],
+				'codprojeto' => [ 'type' => 'int' ],
+				'token' => '',
 				
                 'senha' => [ 'type' => 'password' ],
 
-				'ultimo_acesso' => [ 'type' => 'date', 'display' => false ],
+				// 'ultimo_acesso' => [ 'type' => 'date', 'display' => false ],
 
 				'ip' => [ 'display' => false ],
 				'bloqueado' => ['type' => 'checkbox'],
@@ -31,5 +33,6 @@
 
 			]);
 
-    	}
+		}
+		
     }

@@ -7,6 +7,11 @@ class ModelBase
 	private $data = array();
 	private $foreigns = array();
 
+	function get_foreigns()
+	{
+		return $this->foreigns;
+	} 
+
 	function __construct()
 	{
 		$this->initialize();
@@ -21,6 +26,12 @@ class ModelBase
 	public function get_key()
 	{
 		return $this->get_data( $this->get_options('key') ); 
+	}
+
+	public function set_key($_p)
+	{
+		return $this->data[ $this->get_options('key') ] = $_p;
+		die($_p); 
 	}
 
 	public function get_options($key = null)
@@ -103,7 +114,10 @@ class ModelBase
 			);
 		}
 
-		$options_merged = array_merge($default_options, $options);
+		if(is_array($options))
+			$options_merged = array_merge($default_options, $options);
+		else
+		$options_merged = $default_options;
 		
 		if(!isset($options_merged['label']))
 		{
@@ -113,6 +127,8 @@ class ModelBase
 		if($options_merged['type'] == 'foreign')
 		{
 			$item_foreign = [];
+			$item_foreign['foreign_field'] = $property;
+
 			if(isset($options_merged['foreign']))
 			{
 				if(isset($options_merged['foreign']['model']))
@@ -148,7 +164,7 @@ class ModelBase
 				' 	where ativo = 1 '.
 				'	order by '.$item_foreign['label'].' desc;';
 
-			$this->foreigns[] = $item_foreign;	
+			$this->foreigns[ $item_foreign['source'] ] = $item_foreign;	
 			$options_merged['foreign'] = array_merge( $options_merged['foreign'], $item_foreign );
 		}
 		$options_merged['label'] = str_replace('Cod ', '', $options_merged['label']);
@@ -180,71 +196,95 @@ class ModelBase
 	} 
 
 	public function __set($name, $value)
-    {
-    	if (array_key_exists($name, $this->data)) 
-    	{
-            return $this->data[$name]["value"] = $value;
-        }
-        else
-        {
-        	$this->data[$name] = array('value' => $value);	
-        }
-    }
-
-    public function __get($name)
-    {
-        if (array_key_exists($name, $this->data)) 
-        {
-        	if(isset($this->data[$name]["value"]))
-            	return $this->data[$name]["value"];
-        }
-        return null;
-    }
-
-    public function __isset($name)
-    {
-        return isset($this->data[$name]);
-    }
-
-    public function __unset($name)
-    {
-        unset($this->data[$name]);
-    }
-
-    // database functions
-    public function save($options = null) { return ModelBaseDAO::save($this, $options); }
-    public function remove($options = null){ return ModelBaseDAO::remove($this, $options); }
-    public static function get($options = null, $force_options_array = false){ return ModelBaseDAO::get(new static(), $options, $force_options_array); }
-    public static function get_all($options = null, $force_options_array = false) { return ModelBaseDAO::get_all(new static(), $options, $force_options_array); }
-    public static function count($options = null) { return ModelBaseDAO::count(new static(), $options); }
-
-    public function get_key_value()
-    {
-		$array_properties = array();
-		foreach ($this->get_data() as $k => $v) 
+	{
+		if (array_key_exists($name, $this->data)) 
 		{
-			$array_properties[$k] = isset($v['value'])?$v['value']:null;
-		}    	
-		return $array_properties;
-    }
+					return $this->data[$name]["value"] = $value;
+			}
+			else
+			{
+				$this->data[$name] = array('value' => $value);	
+			}
+	}
 
-    public function json()
-    {
-		return json_encode($this->get_key_value());
-    }
+	public function __get($name)
+	{
+		if (array_key_exists($name, $this->data)) 
+		{
+			if(isset($this->data[$name]["value"]))
+				return $this->data[$name]["value"];
+		}else{
+			// verificar nas relações com outras entidades
+			if(array_key_exists($name, $this->foreigns)){
+	
+				// verifica se tem um id
+				if( $this->get_data( $this->foreigns[$name]["foreign_field"]) == null)
+					return null;
+				
+				// instancia um objeto para pegar
+				$obj = new $this->foreigns[$name]["model"]();
+				
+				// verifica se já está em cache
+				if( isset($this->foreigns[$name]["cache"]))
+					return $this->foreigns[$name]["cache"];
 
-    public function text($show_empty = false)
-    {
-    	$text = '';
-    	foreach ($this->get_data() as $k => $v)
-    	{
-    		if( $show_empty || ( $this->$k != '' ) )
-    		{
-	    		$text .= ''.$v['label'].': '.$this->$k."\n";
-    		}
-    	}
-		return $text;
-    }
+				// se não está em cache traz da base
+				$ret = $obj->get( $this->get_data( $this->foreigns[$name]["foreign_field"] ) );
+				if($ret)
+				{
+					// se trouxe algo salva no cache
+					$this->foreigns[$name]["cache"] = $ret;
+				}
+				return $ret; 
+			}
+		}
+		return null;
+	}
+
+	public function __isset($name)
+	{
+			return isset($this->data[$name]);
+	}
+
+	public function __unset($name)
+	{
+			unset($this->data[$name]);
+	}
+
+	// database functions
+	public function save($options = null) { return ModelBaseDAO::save($this, $options); }
+	public function remove($options = null){ return ModelBaseDAO::remove($this, $options); }
+	public static function get($options = null, $force_options_array = false){ return ModelBaseDAO::get(new static(), $options, $force_options_array); }
+	public static function get_all($options = null, $force_options_array = false) { return ModelBaseDAO::get_all(new static(), $options, $force_options_array); }
+	public static function count($options = null) { return ModelBaseDAO::count(new static(), $options); }
+
+	public function get_key_value()
+	{
+	$array_properties = array();
+	foreach ($this->get_data() as $k => $v) 
+	{
+		$array_properties[$k] = isset($v['value'])?$v['value']:null;
+	}    	
+	return $array_properties;
+	}
+
+	public function json()
+	{
+	return json_encode($this->get_key_value());
+	}
+
+	public function text($show_empty = false)
+	{
+		$text = '';
+		foreach ($this->get_data() as $k => $v)
+		{
+			if( $show_empty || ( $this->$k != '' ) )
+			{
+				$text .= ''.$v['label'].': '.$this->$k."\n";
+			}
+		}
+	return $text;
+	}
 
 	public static function _get_list_page($write_permission = 1)
 	{
@@ -563,11 +603,11 @@ class ModelBaseDAO extends BaseDAO
 			switch ($model->get_property($key)['type']) 
 			{
 				case 'password':
-					$where .= $key.' = MD5( \''.$value.'\' )';
+					$where .= $key.' = MD5( \''.BaseDAO::prepare_var($value).'\' )';
 					break;
 				
 				default:
-					$where .= $key.' = \''.$value.'\'';
+					$where .= $key.' = \''.BaseDAO::prepare_var($value).'\'';
 					break;
 			}
 		}
@@ -581,7 +621,7 @@ class ModelBaseDAO extends BaseDAO
 				if($not_where_count++ > 0)
 					$where .= ' OR ';
 
-				$where .= ' '.$key.' = \''.$value.'\'';
+				$where .= ' '.$key.' = \''.BaseDAO::prepare_var($value).'\'';
 			
 			}
 			$where .= ' ) ';	
@@ -596,7 +636,7 @@ class ModelBaseDAO extends BaseDAO
 				if($where_like_count++ > 0)
 					$where .= ' OR ';
 
-				$where .= ' '.$key.' like \'%'.$value.'\'%';
+				$where .= ' '.$key.' like \'%'.BaseDAO::prepare_var($value).'\'%';
 			
 			}
 			$where .= ' ) ';	
@@ -613,7 +653,7 @@ class ModelBaseDAO extends BaseDAO
 			{
 				if( count($order_array) > 0){
 					$order = 'ORDER BY ';
-					foreach ($order_arr as $k => $v) 
+					foreach ($order_array as $k => $v) 
 					{
 						if($order != 'ORDER BY ')
 							$order .= ', ';
@@ -637,7 +677,7 @@ class ModelBaseDAO extends BaseDAO
 			{
 				if( count($limit_array) > 0){
 					$limit = 'LIMIT ';
-					foreach ($limit_arr as $k => $v) 
+					foreach ($limit_array as $k => $v) 
 					{
 						if($limit != 'LIMIT ')
 							$limit .= ', ';
@@ -659,6 +699,8 @@ class ModelBaseDAO extends BaseDAO
 			' WHERE '	.$where.
 			' '.$order.
 			' '.$limit;
+
+		// echo ("<br />".$query."<br />");
 
 		return $query;
 
@@ -794,7 +836,7 @@ class ModelBaseDAO extends BaseDAO
 
 					switch ($type) {
 						case 'password':
-							$where .= 'MD5( \''.$value.'\' )';
+							$query_values .= 'MD5( \''.$model->$property.'\' )';
 							break;
 
 						case 'date':
@@ -879,12 +921,21 @@ class ModelBaseDAO extends BaseDAO
 			$_this = new static();
 			if($_this->abreConexao()){
 				if($q = $_this->con->query($query))
-					return true;
+				{
+					if($model->get_key() == null)
+					{
+						$model->id = $_this->con->insert_id;
+					}
+					return $model;
+				}
 				else
+				{
 					throw new Exception($_this->con->error);
+				}
 			}
-			else 
+			else {
 				throw new Exception($_this->con->error);
+			}
 		} catch (Exception $e) 
 		{
 			BaseDao::exception($e);

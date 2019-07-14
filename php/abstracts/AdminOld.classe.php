@@ -114,8 +114,8 @@ class AdminDAO extends BaseDAO{
 					WHERE 
 						ativo = 1 
 						AND codprojeto in ( ".$this->codProjeto." , 0 ) 
-						AND email = '" . $this->con->real_escape_string( $obj->email ) . "' 
-					 	AND senha = MD5('".$this->con->real_escape_string( $obj->senha ). "');";
+						AND email = '" . $this->con->real_escape_string( $obj->email ) . "';"; 
+				//	 	AND senha = MD5('".$this->con->real_escape_string( $obj->senha ). "');";
 				if ( $q = $this->con->query($str_q) ){
 					if( !$q->num_rows == 0 ){
 						$reg = $q->fetch_object();

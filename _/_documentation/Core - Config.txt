@@ -1,5 +1,0 @@
-AppConfig::load_from_file( [file_path] )
-    -> carrega as configuraçõe do appconfig.json ou do file_path passado
-    -> se já foi carregado e passar um novo path ele aumenta nos config
-
- 

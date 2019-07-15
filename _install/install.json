@@ -1,0 +1,13 @@
+{
+    "install" : {
+        "root_user_name" : "Will - Root",
+        "root_user" : "root@wilsonneto.com.br",
+        "root_pass" : "123456",
+
+        "models" : {
+            
+        }
+
+    }
+
+}

@@ -28,9 +28,4 @@
 
         }
 
-        public function login()
-        {
-            
-        }
-
     }

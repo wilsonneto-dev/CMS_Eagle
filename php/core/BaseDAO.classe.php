@@ -1,61 +1,46 @@
 <?php
-// v1.1.2
+
 class BaseDAO{
-/*
- * classe com as configura��es do banco
- * as classes que usam acesso ao banco devem ser derivadas desta
- * v1.1.2 - add function add user - Wilson Neto
-*/
+
 	public static $sl = false; // somente leitura
 	
 	// depreciada a variável abaixo
 	public $codProjeto = 1;
 
-	protected $base = "eagle";
-	protected $host = "localhost";
+	/*
+	protected $base;
+	protected $host = AppConfig::get()["db"]["host"];
 
-	protected $usuario = "root";
-	protected $pass = "";
+	protected $usuario = AppConfig::get()["db"]["user"];
+	protected $pass = AppConfig::get()["db"]["pass"];
 
-	protected $leitura_usuario = "root";
-	protected $leitura_pass = "";
+	protected $leitura_usuario = AppConfig::get()["db"]["user-readonly"];
+	protected $leitura_pass = AppConfig::get()["db"]["pass-readonly"];
 
-	protected $base_local = "eagle";
-	protected $host_local = "localhost";
-	protected $usuario_local = "root";
-	protected $pass_local = "";
+	// protected $base_local = "eagle";
+	// protected $host_local = "localhost";
+	// protected $usuario_local = "root";
+	// protected $pass_local = "";
+	*/
 
-	protected function get_usuario(){ return BaseDAO::$sl ? $this->leitura_usuario : $this->usuario; }
-	protected function get_pass(){ return BaseDAO::$sl ? $this->leitura_pass : $this->pass; }
+	protected function get_usuario(){ return BaseDAO::$sl ? AppConfig::get()["db"]["user-readonly"] : AppConfig::get()["db"]["user"]; }
+	protected function get_pass(){ return BaseDAO::$sl ? AppConfig::get()["db"]["pass-readonly"] : AppConfig::get()["db"]["pass"]; }
 
-	/*configura��es do banco*/
 	public function __construct(){}
 	
-	/*controla conex�o com o banco*/
 	protected function AbreConexao(){
 		try {
+			
 			/* activate reporting */
 			$driver = new mysqli_driver();
 			$driver->report_mode = MYSQLI_REPORT_OFF;
-			if( ! $this->is_local() )
-			{
-				$this->con = new mysqli(
-					$this->host, 
-					$this->get_usuario(), 
-					$this->get_pass(), 
-					$this->base
-				);		
-			}
-			else
-			{
-				$this->con = new mysqli
-				( 
-					$this->host_local, 
-					$this->usuario_local, 
-					$this->pass_local, 
-					$this->base_local 
-				);
-			}
+			
+			$this->con = new mysqli(
+				AppConfig::get()["db"]["host"], 
+				$this->get_usuario(), 
+				$this->get_pass(), 
+				AppConfig::get()["db"]["base"]
+			);		
 
 			if( !$this->con->connect_error )
 			{
@@ -81,21 +66,12 @@ class BaseDAO{
 	}
 	
 	public function get_mysqli(){
-		if(!$this->is_local())
-		{
-			return new mysqli( $this->host, $this->get_usuario(), $this->get_pass(), $this->base );		
-		}
-		else
-		{
-			return new mysqli
-			( 
-				$this->host_local, 
-				$this->usuario_local, 
-				$this->pass_local, 
-				$this->base_local 
-			);
-		}
-		return new mysqli( $this->host, $this->get_usuario(), $this->get_pass(), $this->base );
+		new mysqli(
+			AppConfig::get()["db"]["host"], 
+			$this->get_usuario(), 
+			$this->get_pass(), 
+			AppConfig::get()["db"]["base"]
+		);
 	}
 	
 	public static function _get_mysqli(){
@@ -105,10 +81,7 @@ class BaseDAO{
 
 	public static function exception(Exception $exception)
 	{
-		if(self::is_local())
-			echo "Localhost - BaseDao::exception - Erro ao executar comando SQL: ".$exception->getMessage();
-		
-		throw new Exception("Erro ao executar comando SQL.");
+		throw $exception;
 	} 
 
 	public static function prepare_var( $var, $params = 'string')
@@ -134,7 +107,8 @@ class BaseDAO{
 
 	public static function is_local()
 	{
-		return ( EnvironmentUtils::is_local() );
+		return false;
+		// return ( EnvironmentUtils::is_local() );
 	}
 
 	public static function query( $query, $force_array = false )
@@ -182,12 +156,35 @@ class BaseDAO{
 		}
 	}
 
+	public static function multi_query( $query, $force_array = false )
+	{
+		try 
+		{
+			$_this = new static();
+			if($_this->abreConexao())
+			{
+				$_this->con->multi_query($query);
+				if($_this->con->errno > 0)
+				{
+					throw new Exception($_this->con->error);
+				}
+				return $_this->con;
+			}
+			else 
+			{
+				throw new Exception($_this->con->error);
+			}
+		} 
+		catch (Exception $e) 
+		{
+			BaseDao::exception($e);
+		}
+	}
+
 }
 
 function erro_bd($ex)
 {
-	if($ex == null)
-		$ex = new Exception("Erro na base de dados...");
 	BaseDao::exception($ex);
 }
 

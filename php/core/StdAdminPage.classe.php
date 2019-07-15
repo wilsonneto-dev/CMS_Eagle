@@ -104,7 +104,7 @@ class StdAdminPage{
                         <small>%s</small>
                     </h1>
                     <ol class="breadcrumb">
-                        <li><a href="/admin/%s"><i class="fa fa-angle-double-left"></i> %s</a></li>
+                        <li><a href="/%s"><i class="fa fa-angle-double-left"></i> %s</a></li>
                     </ol>
                 </section>
 				', $this->title, $this->sub_title, $this->back_link_url, $this->title_back
@@ -128,7 +128,7 @@ class StdAdminPage{
 			<section class="content">
 	            
 	            <section style="text-align: right; display: '.( ( $this->cadastrar == false || $this->permissao == "0" ) ? 'none':'block' ).'" >
-	    			<a href="/admin/crud/%s/form%s" class="btn btn-primary">
+	    			<a href="/crud/%s/form%s" class="btn btn-primary">
 						Novo / Cadastrar
 					</a>
 					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -278,7 +278,7 @@ class StdGalleryManager
 					<div class=\"info_wrapper\">
 						<input type=\"hidden\" name=\"id[]\" value=\"#id\" />
 						<textarea name=\"descricao[]\">#texto</textarea>
-						<a class=\"controle\" title=\"Excluir\" onclick=\"return confirm('Excluir?');\" href=\"/admin/?pg=" . $_page . "FotoExcluir&id=#id\"><img src=\"/admin/img/del.png\" /></a>
+						<a class=\"controle\" title=\"Excluir\" onclick=\"return confirm('Excluir?');\" href=\"/?pg=" . $_page . "FotoExcluir&id=#id\"><img src=\"/img/del.png\" /></a>
 					</div>
 				</div>
 			</li>

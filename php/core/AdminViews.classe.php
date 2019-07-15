@@ -1,5 +1,6 @@
 <?php
 
+// create components for forms views
 class AdminViews{
 
 	public static function alert( $titulo, $mensagem, $tipo ){

@@ -1,10 +1,7 @@
 <?php
 
-    include_once 'php/config/config.php';
-
-    EagleAdmin::init($_GET);
-
-    exit();
+    include_once 'php/autoload.php';
     
+    EagleAdmin::init($_GET); 
 
 ?>

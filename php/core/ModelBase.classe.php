@@ -390,15 +390,15 @@ class ModelBase
 				}
 
 			}
-			$controls .= "<a class=\"controle\" target=\"_blank\" title=\"Link\" href=\"$link\"><img src=\"/admin/theme/img/link.png\" /></a>";
+			$controls .= "<a class=\"controle\" target=\"_blank\" title=\"Link\" href=\"$link\"><img src=\"/frontend/theme/img/link.png\" /></a>";
 		}
 		if($this->get_options('list_edit_button'))
 		{
-			$controls .= "<a class=\"controle\" title=\"Editar\" href=\"/admin/crud/" . $this->get_source() . "/form/#".$this->get_options('key')."\"><img src=\"/admin/theme/img/edt.png\" /></a>";
+			$controls .= "<a class=\"controle\" title=\"Editar\" href=\"/crud/" . $this->get_source() . "/form/#".$this->get_options('key')."\"><img src=\"/frontend/theme/img/edt.png\" /></a>";
 		}
 		if($this->get_options('list_remove_button') && ($write_permission == 1))
 		{
-			$controls .= "<a class=\"controle\" title=\"Excluir\" onclick=\"return confirm('Excluir?');\" href=\"/admin/crud/" . $this->get_source() . "/remove/#".$this->get_options('key')."\"><img src=\"/admin/theme/img/del.png\" /></a>";
+			$controls .= "<a class=\"controle\" title=\"Excluir\" onclick=\"return confirm('Excluir?');\" href=\"/crud/" . $this->get_source() . "/remove/#".$this->get_options('key')."\"><img src=\"/frontend/theme/img/del.png\" /></a>";
 		}
 
 		$r->txtItem = "

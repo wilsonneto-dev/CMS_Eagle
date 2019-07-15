@@ -16,7 +16,7 @@ else
 	$instance = $entity_str::get( $this->route['id'] );
 	$clone = clone $instance;
 	if( $instance == null )
-		$this->redirect( '/admin/crud/' . $this->route[ 'entity' ] );
+		$this->redirect( '/crud/' . $this->route[ 'entity' ] );
 }
 
 if($this->is_post())
@@ -27,7 +27,7 @@ if($this->is_post())
 
 		LogAdmin::_salvar
 		( 
-			$instance->get_options('label')." - save - " .$saved, 
+			$instance->get_options('label')." - save", 
 			$instance->get_source(), $this->get_credentials('admin')->id, 
 			json_encode($clone), json_encode( $instance ) 
 		);
@@ -35,7 +35,7 @@ if($this->is_post())
 		if($saved)
 		{
 			$this->message('Salvo com sucesso');
-			$this->redirect( '/admin/crud/' . $this->route[ 'entity' ] );
+			$this->redirect( '/crud/' . $this->route[ 'entity' ] );
 		}
 		else 
 			$this->message('Ocorreu um erro ao cadastrar', 'error');

@@ -19,9 +19,8 @@ class EagleAdmin
 	#region configs
 	public function cfg_setup()
 	{
-		$this->cfg["app_name"] = "Buzz";
-
-		// e-mails 
+		$this->cfg = AppConfig::get()["app"];
+		$this->cfg["app_name"] = $this->cfg["name"];
 
 	}
 

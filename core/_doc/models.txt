@@ -1,0 +1,66 @@
+exemplo:
+
+<?php
+
+    class Banner extends ModelBase
+    {
+        public function initialize()
+        {
+            parent::initialize();
+
+            $this->set_properties
+            ([
+                'id' => [],
+                'cod_banner_tipo' => [
+                    'type' => 'foreign',
+                    'foreign' => [
+                        'model' => 'BannerTipo',
+                        'label' => 'nome',
+                        'key' => 'id'
+                    ]
+                ],
+
+                'descricao' => [ 'list' => true ],
+                'imagem' => [ 'type' => 'image' ],
+                'link' => [],
+                
+                'visivel' => [ 'type' => 'checkbox', 'list' => true ]
+
+            ]);
+
+        }
+
+    }
+
+
+--------------------
+
+As propertis do "$this->set_properties([])" são os campos;
+
+Id pro padrão é especial:
+				'type' => 'int',
+				'length' => 15,
+				'required' => false,
+				'input' => array( 'display' => false ),
+				'list' => true,
+				'form_visible' => true
+
+Outros por padrão:
+				'type' => 'varchar',
+				'length' => 256,
+				'required' => false,
+				'input' => array( 'display' => true ),
+				'list' => false,
+				'form_visible' => true
+
+As propriedades podem ser:
+
+type = 
+label = texto com o que aparecerá de label no campo e nas demais views
+lenght = o tamanho
+required = *true | false
+input = um array de elementos [
+    display => *true | false
+]
+form_visible = *true | false
+list = true | *false 

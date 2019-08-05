@@ -1,7 +1,7 @@
 <?php
 
 chdir ( "../" );
-include_once "php/autoload.php";
+include_once "core/autoload.php";
 
 AppConfig::load_from_file();
 AppConfig::load_from_file("_install/install.json");

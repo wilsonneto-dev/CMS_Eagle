@@ -1,26 +1,26 @@
 <?php
 
-define("CORE_PATH", "./core");
-define("APP_PATH", "./app");
-
 #funcao q carrega as classes automaticamente
 spl_autoload_register(function( $classe ) {
 
+	if(file_exists( "./app/models/".$classe.".classe.php"))
+		require_once( "./app/models/".$classe.".classe.php");
+
 	/* obsolete */
-	if(file_exists( CORE_PATH . "/abstracts/".$classe.".classe.php"))
-		require_once( CORE_PATH . "/abstracts/".$classe.".classe.php");
+	if(file_exists( "./core/abstracts/".$classe.".classe.php"))
+		require_once( "./core/abstracts/".$classe.".classe.php");
 
 	/* core */
-	if(file_exists( CORE_PATH . "/models/".$classe.".classe.php"))
-		require_once( CORE_PATH . "/models/".$classe.".classe.php");
+	if(file_exists( "./core/models/".$classe.".classe.php"))
+		require_once( "./core/models/".$classe.".classe.php");
 	
-	if(file_exists( CORE_PATH . "/core/".$classe.".classe.php"))
-		require_once( CORE_PATH . "/core/".$classe.".classe.php");
+	if(file_exists( "./core/core/".$classe.".classe.php"))
+		require_once( "./core/core/".$classe.".classe.php");
 	
-	if(file_exists( CORE_PATH . "/config/".$classe.".classe.php"))
-		require_once( CORE_PATH . "/config/".$classe.".classe.php");
+	if(file_exists( "./core/config/".$classe.".classe.php"))
+		require_once( "./core/config/".$classe.".classe.php");
 	
-	if(file_exists( CORE_PATH . "/util/".$classe.".classe.php"))
-		require_once( CORE_PATH . "/util/".$classe.".classe.php");	
+	if(file_exists( "./core/util/".$classe.".classe.php"))
+		require_once( "./core/util/".$classe.".classe.php");	
 
 });

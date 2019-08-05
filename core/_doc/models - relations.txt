@@ -1,0 +1,47 @@
+Exemplo de model de foreign key:
+
+                'cod_banner_tipo' => [
+                    'type' => 'foreign',
+                    'foreign' => [
+                        'model' => 'BannerTipo',
+                        'label' => 'nome',
+                        'key' => 'id'
+                    ]
+                ],
+------------------------------------------------
+# Foreign
+
+Default:
+				$item_foreign['model'] = StringHelper::camel_case(str_replace('cod_', '', $property));
+				$item_foreign['label'] = 'titulo';
+				$item_foreign['key'] = 'id';
+				$item_foreign['source'] = str_replace('cod_', '', $property);
+       			$item_foreign['query_select'] = 
+				    'select '.
+				    $item_foreign['key'].' as valor,'.
+				    $item_foreign['label'].' as texto '.
+				    ' 	from '.$item_foreign['source'].
+				    ' 	where ativo = 1 '.
+				    '	order by '.$item_foreign['label'].' desc;';
+
+Estrutura:
+campo do objeto => [
+    type = foreign
+
+    foreign => dados do outro objeto [
+        model => qual o model (default pelo nome do campo)
+        label => qual o campo de label do outro model (pelos parametros)
+        key => qual a chave primária do outro model (id)
+        source => tabela (defalt pelo model)
+        query_select => como será a consula (default pelos parametros)
+    ]
+
+]
+
+Cria no objeto a lista $objeto->foreigns:
+
+$this->foreigns[ $item_foreign['source'] ] = $item_foreign;
+
+Cria também o: 
+$this->foreigns[$name]["foreign_field"]
+$this->foreigns[$name]["cache"]

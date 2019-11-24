@@ -1,4 +1,4 @@
-## Eagle CMS
+## Eagle CMS :eagle:
 #### The best way to simplify the admin's panel for your simple site.
 
 > This project is prepared for docker containers, all the Dockerfiles and docker-compose.yml file are configured.

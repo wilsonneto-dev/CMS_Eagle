@@ -14,6 +14,14 @@
         "file": "file"
     },
 
+    "Gato": {
+        "id": null,
+        "nome": { "type": "varchar", "list": true },
+        "descricao": "varchar",
+        "dono": { "type": "varchar", "list": true },
+        "historia": { "type": "editor", "list": true }
+    },
+
     "Arquivo2": {
         "id": null,
         "nome": "varchar",

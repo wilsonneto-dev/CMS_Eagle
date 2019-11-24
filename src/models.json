@@ -3,7 +3,7 @@
         "id": null,
         "titulo" : { "label": "Título", "list": true },
         "ref": { "list": true },
-        "investimento": { "type": "decimal" },
+        "investimento": { "type": "num" },
         "descricao": { "label": "Descrição", "type": "text" }    
     },
 

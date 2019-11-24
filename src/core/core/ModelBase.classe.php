@@ -731,15 +731,15 @@ class ModelBaseDAO extends BaseDAO
 
 	public static function get($model, $options = null, $force_options_array = false)
 	{
-		var_dump($model);
-		die();
-		
+		// var_dump($model);
+		// die();
+
 		if($options == null)
 			$options = [];
 
 		$query = self::build_query( $model, $options, $force_options_array, [ 'limit' => 1 ] );
-		var_dump($query);
-		die();
+		// var_dump($query);
+		// die();
 
 		try 
 		{

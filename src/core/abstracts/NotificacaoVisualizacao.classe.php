@@ -97,7 +97,7 @@ class NotificacaoVisualizacaoDAO extends BaseDAO{
 						$p->cod_admin = $obj->cod_admin;
 						$p->cod_notificacao_tipo = $obj->cod_notificacao_tipo;
 						if( is_null( $obj->data) ) $p->data = null;
-						else $p->data = new DateTime( $obj->data );
+						else $p->data = new DateTime( $p->data = null );
 						return true;
 					}
 					else return false;	

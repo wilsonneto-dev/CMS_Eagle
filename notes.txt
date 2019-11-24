@@ -1,0 +1,18 @@
+Projeto focado em ser um cms default com administração de conteúdo
+- apenas a parte de administração de conteúdo, CMS / CRUD
+- instalar apenas com uma rota
+- administrar o domínio / entidades apenas com o models.json
+
+Caso precise de algo customizado para cada projeto entraria em /src/custom
+
+------------------------------------------
+
+Docker commands
+
+-- parar e remover todos os containers
+docker stop $(docker ps -a -q)
+docker rm $(docker ps -a -q)
+
+-- logs do container
+docker logs php-eagle-container
+

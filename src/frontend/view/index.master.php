@@ -90,11 +90,11 @@
                                 <i class="fa fa-circle text-success"></i> 
                                 <?php $this->v->out( $this->get_credentials('grupo_admin')->nome ); ?>
                             </small>
-                            <br />
+                            <!-- br />
                             <small>
                                 <i class="fa fa-circle"></i> 
                                 <?php $this->v->out( $this->get_credentials('workspace_nome')  ); ?>
-                            </small>
+                            </small -->
                         </div>
                     </div>
 

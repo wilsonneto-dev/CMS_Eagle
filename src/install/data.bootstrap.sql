@@ -41,3 +41,4 @@ INSERT INTO `projeto_workspace` (`id`, `nome`, `cod_admin`, `hash`) VALUES
 
 INSERT INTO admin_projeto_workspace ( id, cod_admin, cod_projeto_workspace ) VALUES
 ( 1, 1, 1 );
+

@@ -6,7 +6,7 @@ CREATE TABLE admin (
   nome varchar(400) DEFAULT NULL,
   email varchar(400) DEFAULT NULL,
   senha varchar(400) DEFAULT NULL,
-  ultimo_acesso timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  ultimo_acesso timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   ip varchar(100) DEFAULT NULL,
   bloqueado int(1) DEFAULT '0',
   imagem varchar(400) DEFAULT NULL,

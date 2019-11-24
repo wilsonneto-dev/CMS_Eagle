@@ -15,20 +15,26 @@
                             <div class="footer" style="text-align: right;">
                                 <button type="submit" class="btn btn-lg btn-success btn-block">logar</button>
 
-                                <div class="social-auth-links text-center">
-                                    <p>- ou -</p>
-                                    <a href="#" class="btn btn-block btn-social btn-facebook"><i class="fa fa-facebook" style="font-size: 1em !important"></i>
-                                        Logar com Facebook
-                                    </a>
-                                    <!-- a href="#" class="btn btn-block btn-social btn-google"><i class="fa fa-google-plus" style="font-size: 1em !important"></i>
-                        Logar com Google
-                        </a -->
-                                </div>
-                                <!-- /.social-auth-links -->
-                                <br>
-                                <a href="/access/forget-pass">Esqueci a senha</a><br>
-                                <a href="/access/register" class="text-center">Criar conta</a>
+                                
+                                <?php if(AppConfig::get()['others']['social-login']) { ?> 
+                                    <div class="social-auth-links text-center">
+                                        <p>- ou -</p>
+                                        <a href="#" class="btn btn-block btn-social btn-facebook"><i class="fa fa-facebook" style="font-size: 1em !important"></i>
+                                            Logar com Facebook
+                                        </a>
+                                        <!-- a href="#" class="btn btn-block btn-social btn-google"><i class="fa fa-google-plus" style="font-size: 1em !important"></i>
+                                            Logar com Google
+                                        </a -->
+                                    </div>
+                                    <!-- /.social-auth-links -->
+                                    <br>
+                                <?php } ?>
 
+                                <?php if(AppConfig::get()['others']['create-account']) { ?> 
+                                    <a href="/access/forget-pass">Esqueci a senha</a><br>
+                                    <a href="/access/register" class="text-center">Criar conta</a>
+                                <?php } ?>
+                                
                             </div>
 
                         </form>

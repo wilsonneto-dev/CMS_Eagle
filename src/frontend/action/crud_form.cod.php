@@ -6,14 +6,25 @@ $clone = null;
 
 $write_permission = $this->check_permissions( $this->route['entity'] );
 
+$instance = ModelGenerator::get_models($entity_str);
+if($instance == null)
+	$instance = new $entity_str();
+
 // se tem um id de objeto e é para editar
 if( $this->route['id'] == null )
 {
-	$instance = new $entity_str();
+	// $instance = new $entity_str();
 }
 else
 {
-	$instance = $entity_str::get( $this->route['id'] );
+	var_dump($instance);
+
+	// $instance = $entity_str::get( $this->route['id'] );
+	$instance = $instance::get($this->route['id']);
+	
+	// var_dump($instance);
+	die("here...");
+
 	$clone = clone $instance;
 	if( $instance == null )
 		$this->redirect( '/crud/' . $this->route[ 'entity' ] );

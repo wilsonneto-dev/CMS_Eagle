@@ -1,0 +1,29 @@
+{
+    "CampanhaNova": {
+        "id": null,
+        "titulo" : { "label": "Título", "list": true },
+        "ref": { "list": true },
+        "investimento": { "type": "decimal" },
+        "descricao": { "label": "Descrição", "type": "text" }    
+    },
+
+    "Arquivo": {
+        "id": null,
+        "nome": "varchar",
+        "descricao": "varchar",
+        "file": "file"
+    },
+
+    "Arquivo2": {
+        "id": null,
+        "nome": "varchar",
+        "descricao": "varchar",
+        "file": "file"
+    },
+    
+    "Teste": {
+        "id": null,
+        "name" : { "label": "Nome", "list": true },
+        "preco": "decimal"
+    }
+}

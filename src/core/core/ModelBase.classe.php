@@ -270,7 +270,7 @@ class ModelBase
 
 	public function json()
 	{
-	return json_encode($this->get_key_value());
+		return json_encode($this->get_key_value());
 	}
 
 	public function text($show_empty = false)
@@ -729,12 +729,17 @@ class ModelBaseDAO extends BaseDAO
 		return $model;
 	}
 
-	public static function get(ModelBase $model, $options = null, $force_options_array = false)
+	public static function get($model, $options = null, $force_options_array = false)
 	{
+		var_dump($model);
+		die();
+		
 		if($options == null)
 			$options = [];
 
 		$query = self::build_query( $model, $options, $force_options_array, [ 'limit' => 1 ] );
+		var_dump($query);
+		die();
 
 		try 
 		{

@@ -107,16 +107,10 @@ Texts:
 Editor WYSIW
 - editor
 
-/* boolean */
-case "checkbox":
-    $dataDef .= "int(1)";
-break;
+Boolean / Checkbox:
+- checkbox
 
-default:
-    $dataDef .= "varchar(".$data["length"].")";
-break;
-
-
+`If don't passa a type parameter the field will be a varchar field`
 
 -----  
 :relaxed:  

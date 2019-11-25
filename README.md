@@ -110,7 +110,7 @@ Editor WYSIW
 Boolean / Checkbox:
 - checkbox
 
-`If don't passa a type parameter the field will be a varchar field`
+`If don't pass a type parameter the field will be a varchar field`
 
 -----  
 :relaxed:  

@@ -90,7 +90,12 @@ class Upload{
 	
 	public static function salvaArq($nome, $file){
 		//echo $nome." " ;
-		$up = new Upload($nome,"../uploads",$file);
+		$nextPath = getcwd()."/uploads2";
+		if (!file_exists($nextPath)) {
+			mkdir($nextPath, 0755, true);
+		}
+
+		$up = new Upload($nome, $nextPath ,$file);
 		//print_r($up);
 		if($up->move())
 			return "uploads/".$nome.strrchr($up->fileNome,".");

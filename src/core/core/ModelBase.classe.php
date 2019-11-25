@@ -253,19 +253,25 @@ class ModelBase
 
 	// database functions
 	public function save($options = null) { return ModelBaseDAO::save($this, $options); }
-	public function remove($options = null){ return ModelBaseDAO::remove($this, $options); }
-	public static function get($options = null, $force_options_array = false){ return ModelBaseDAO::get(new static(), $options, $force_options_array); }
+	public function remove($options = null){ return ModelBaseDAO::remove($this, $options); }	
+
+	public static function get($options = null, $force_options_array = false){ return ModelBaseDAO::get( new static(), $options, $force_options_array); }
+	public function get_static($pModel, $options = null, $force_options_array = false){ return ModelBaseDAO::get( $pModel, $options, $force_options_array); }
+
 	public static function get_all($options = null, $force_options_array = false) { return ModelBaseDAO::get_all(new static(), $options, $force_options_array); }
+	public function get_all_static($pModel, $options = null, $force_options_array = false) { return ModelBaseDAO::get_all($pModel, $options, $force_options_array); }
+
 	public static function count($options = null) { return ModelBaseDAO::count(new static(), $options); }
+	public function count_static($pModel, $options = null) { return ModelBaseDAO::count($pModel, $options); }
 
 	public function get_key_value()
 	{
-	$array_properties = array();
-	foreach ($this->get_data() as $k => $v) 
-	{
-		$array_properties[$k] = isset($v['value'])?$v['value']:null;
-	}    	
-	return $array_properties;
+		$array_properties = array();
+		foreach ($this->get_data() as $k => $v) 
+		{
+			$array_properties[$k] = isset($v['value'])?$v['value']:null;
+		}    	
+		return $array_properties;
 	}
 
 	public function json()
@@ -283,7 +289,7 @@ class ModelBase
 				$text .= ''.$v['label'].': '.$this->$k."\n";
 			}
 		}
-	return $text;
+		return $text;
 	}
 
 	public static function _get_list_page($write_permission = 1)
@@ -422,7 +428,6 @@ class ModelBase
 
 		return $page; 
 	}
-
 
 	public static function _get_form_page($permission = 1)
 	{
@@ -707,7 +712,7 @@ class ModelBaseDAO extends BaseDAO
 	}
 
 	// DATE_FORMAT( a.data_postagem, \'%d/%m/%Y %h:%i\' ) as data
-	public static function fill_model_from_fech( ModelBase $model, $fetch )
+	public static function fill_model_from_fech(ModelBase $model, $fetch )
 	{
 		$data = $model->get_data();
 		foreach ( array_keys( $data ) as $property)
@@ -731,15 +736,7 @@ class ModelBaseDAO extends BaseDAO
 
 	public static function get($model, $options = null, $force_options_array = false)
 	{
-		// var_dump($model);
-		// die();
-
-		if($options == null)
-			$options = [];
-
 		$query = self::build_query( $model, $options, $force_options_array, [ 'limit' => 1 ] );
-		// var_dump($query);
-		// die();
 
 		try 
 		{

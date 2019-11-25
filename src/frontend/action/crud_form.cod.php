@@ -17,13 +17,8 @@ if( $this->route['id'] == null )
 }
 else
 {
-	var_dump($instance);
-
 	// $instance = $entity_str::get( $this->route['id'] );
-	$instance = $instance::get($this->route['id']);
-	
-	// var_dump($instance);
-	die("here...");
+	$instance = $instance::get_static($instance, $this->route['id']);
 
 	$clone = clone $instance;
 	if( $instance == null )

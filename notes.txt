@@ -1,3 +1,7 @@
+Fix:
+[ ] Uploads sem permissões no container: upload.classe.php na linha 93
+
+-----------
 Projeto focado em ser um cms default com administração de conteúdo
 - apenas a parte de administração de conteúdo, CMS / CRUD
 - instalar apenas com uma rota

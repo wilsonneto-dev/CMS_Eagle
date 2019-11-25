@@ -1,37 +1,32 @@
 {
-    "CampanhaNova": {
-        "id": null,
-        "titulo" : { "label": "Título", "list": true },
-        "ref": { "list": true },
-        "investimento": { "type": "num" },
-        "descricao": { "label": "Descrição", "type": "text" }    
+    "BlogAutor": {
+        "options": {
+            "title": "Autor",
+            "title_plural": "Autores"
+        },
+        "properties": {
+            "id": null,
+            "nome": { "type": "varchar", "list": true },
+            "introducao": "textarea",
+            "link": null,
+            "imagem": { "type": "image", "list": true }
+        }
     },
 
-    "Arquivo": {
+    "Texto": {
         "id": null,
-        "nome": "varchar",
-        "descricao": "varchar",
-        "file": "file"
-    },
 
-    "Gato": {
-        "id": null,
-        "nome": { "type": "varchar", "list": true },
-        "descricao": "varchar",
-        "dono": { "type": "varchar", "list": true },
-        "historia": { "type": "editor", "list": true }
-    },
+        "cod_blog_autor": {
+            "type": "foreign",
+            "foreign": {
+                "model": "BlogAutor",
+                "label": "nome",
+                "key": "id"
+            }
+        },
 
-    "Arquivo2": {
-        "id": null,
-        "nome": "varchar",
-        "descricao": "varchar",
-        "file": "file"
-    },
-    
-    "Teste": {
-        "id": null,
-        "name" : { "label": "Nome", "list": true },
-        "preco": "decimal"
+        "data_postagem": { "type": "date" },
+        "introducao": { "type": "text" },
+        "texto": { "type": "editor" }
     }
 }

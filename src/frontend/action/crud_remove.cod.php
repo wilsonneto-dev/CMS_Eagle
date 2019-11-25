@@ -8,14 +8,23 @@ $write_permission = $this->check_permissions( $this->route['entity'] );
 
 if( $this->route['id'] == null )
 {
-	$this->redirect( '/admin/crud/' . $this->route[ 'entity' ] );
+	$this->redirect( '/crud/' . $this->route[ 'entity' ] );
 }
 else
 {
-	$instance = $entity_str::get( $this->route['id'] );
+	$instance = ModelGenerator::get_models($entity_str);
+	if($instance == null)
+	{
+		$instance = $entity_str::get( $this->route['id'] );
+	}
+	else 
+	{
+		$instance = $instance::get_static($instance, $this->route['id']);
+	}
+
 	$clone = clone $instance;
 	if( $instance == null )
-		$this->redirect( '/admin/crud/' . $this->route[ 'entity' ] );
+		$this->redirect( '/crud/' . $this->route[ 'entity' ] );
 }
 
 if($write_permission)
@@ -41,4 +50,4 @@ else
 	$this->message('Usuário sem permissão', 'error');	
 }
 
-$this->redirect( '/admin/crud/' . $this->route[ 'entity' ] );
+$this->redirect( '/crud/' . $this->route[ 'entity' ] );

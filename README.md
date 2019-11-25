@@ -32,6 +32,92 @@
 ![](/github/login.png)
 ![](/github/crud.png)
 ![](/github/lists.png)
+
+#### Models definition
+
+Example:
+```
+{
+    "BlogAutor": {
+        "options": {
+            "title": "Autor",
+            "title_plural": "Autores"
+        },
+        "properties": {
+            "id": null,
+            "nome": { "type": "varchar", "list": true },
+            "introducao": "textarea",
+            "link": null,
+            "imagem": { "type": "image", "list": true },
+            "thumb": { "type": "image", "list": true }
+        }
+    },
+
+    "Texto": {
+        "id": null,
+
+        "cod_blog_autor": {
+            "type": "foreign",
+            "foreign": {
+                "model": "BlogAutor",
+                "label": "nome",
+                "key": "id"
+            }
+        },
+
+        "data_postagem": { "type": "date" },
+        "introducao": { "type": "text" },
+        "texto": { "type": "editor" },
+        "imagem": { "type": "image" }
+    }
+}
+
+```
+
+#### Properties types:
+
+Varchar:
+- varchar
+- email
+- url
+- phone
+- link
+- color
+- file
+- image
+- enum
+
+Decimals
+- decimal
+- price
+
+Integers
+- num
+- number
+- int
+
+Dates:
+- date
+- data
+
+Texts:
+- textarea
+- textarea-m
+
+Editor WYSIW
+- editor
+
+/* boolean */
+case "checkbox":
+    $dataDef .= "int(1)";
+break;
+
+default:
+    $dataDef .= "varchar(".$data["length"].")";
+break;
+
+
+
 -----  
 :relaxed:  
 by: Wilson Neto  
